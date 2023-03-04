@@ -1,25 +1,22 @@
-
 const fetchData = () => {
-    fetch("https://openapi.programming-hero.com/api/ai/tools")
-        .then((res) => res.json())
-        .then((data) => getData(data.data.tools))
-}
-
-
+  fetch("https://openapi.programming-hero.com/api/ai/tools")
+    .then((res) => res.json())
+    .then((data) => getData(data.data.tools));
+};
 
 const getData = (data) => {
+  var go = 1;
+  const row = document.getElementById("row");
+  data.forEach((singleData) => {
+    const { id } = singleData;
 
-    const row = document.getElementById("row");
-    data.forEach(singleData => {
-        const { id } = singleData
-        // console.log(id);
-        // console.log(singleData)
-        // console.log("prin------------------------------------------")
-        // console.log(singleData.features)
-
-        const col = document.createElement("div");
-        col.classList.add("col");
-        col.innerHTML = `
+    const col = document.createElement("div");
+    col.classList.add("col");
+    if (go > 3) {
+      col.classList.add("hide");
+    }
+    go++;
+    col.innerHTML = `
 
 <div class="card h-100">
 <img src="${singleData.image}" class="card-img-top p-3 rounded-2" alt="...">
@@ -60,48 +57,42 @@ const getData = (data) => {
 
 
 </div>
-`
-        row.appendChild(col);
+`;
+    row.appendChild(col);
 
-        const feature = document.getElementById(`features_${id}`)
-        for (let i = 0; i < singleData.features.length; i++) {
-            const li = document.createElement("li");
-            li.innerHTML = `${singleData.features[i]}`
-            feature.appendChild(li)
-        }
-    });
-
-
-}
-
+    const feature = document.getElementById(`features_${id}`);
+    for (let i = 0; i < singleData.features.length; i++) {
+      const li = document.createElement("li");
+      li.innerHTML = `${singleData.features[i]}`;
+      feature.appendChild(li);
+    }
+  });
+};
 
 const fetchId = (id) => {
-    let url = `https://openapi.programming-hero.com/api/ai/tool/${id}`
-    console.log(url)
+  let url = `https://openapi.programming-hero.com/api/ai/tool/${id}`;
+  console.log(url);
 
-    fetch(url)
-        .then((res) => res.json())
-        .then((data) => showDetails(data))
-}
-
+  fetch(url)
+    .then((res) => res.json())
+    .then((data) => showDetails(data));
+};
 
 const showDetails = (detailsShow) => {
-    // console.log("-------------------------------------------------------------------")
-    // console.log(detailsShow.data)
-    
-    removemodal()
+  // console.log("-------------------------------------------------------------------")
+  // console.log(detailsShow.data)
 
+  removemodal();
 
+  const modalBody = document.getElementById("modal-body");
 
-    const modalBody = document.getElementById("modal-body")
+  // const modalContent= document.getElementById("modal")
+  // Object.entries(detailsShow).forEach(singleData => {
+  // console.log(singleData + `i am here`)
 
-    // const modalContent= document.getElementById("modal")
-    // Object.entries(detailsShow).forEach(singleData => {
-    // console.log(singleData + `i am here`)
-
-    const modal = document.createElement("div");
-    modal.classList.add('row');
-    modal.innerHTML = `
+  const modal = document.createElement("div");
+  modal.classList.add("row");
+  modal.innerHTML = `
         <div class="col-md-6">
 
         <div class="card p-2 bg-secondary">
@@ -137,50 +128,49 @@ const showDetails = (detailsShow) => {
         </div>
       </div>
    
-    `
+    `;
 
-    modalBody.appendChild(modal)
+  modalBody.appendChild(modal);
 
+  // const featureModal= document.getElementById("modal_feature");
+  // for (let i = 0; i < detailsShow.data.features.length; i++) {
+  //     const li = document.createElement("li");
+  //     li.innerHTML = `${detailsShow.data.features[i].feature_name}`
+  //     featureModal.appendChild(li);
+  //     console.log(li)
+  // }
 
-    // const featureModal= document.getElementById("modal_feature");
-    // for (let i = 0; i < detailsShow.data.features.length; i++) {
-    //     const li = document.createElement("li");
-    //     li.innerHTML = `${detailsShow.data.features[i].feature_name}`
-    //     featureModal.appendChild(li);
-    //     console.log(li)
-    // }
+  // append goes here -----------------------------------
+  const feature = document.getElementById("modal_feature");
+  Object.entries(detailsShow.data.features).map((singleData) => {
+    const li = document.createElement("li");
+    li.innerHTML = `${singleData[1].feature_name}`;
+    feature.appendChild(li);
+  });
 
-    // append goes here -----------------------------------
-    const feature = document.getElementById("modal_feature");
-    Object.entries(detailsShow.data.features).map((singleData) => {
-      const li = document.createElement("li");
-      li.innerHTML = `${singleData[1].feature_name}`;
-      feature.appendChild(li);
+  const integration = document.getElementById("integration");
+  detailsShow.data.integrations.forEach((singleIntegrations) => {
+    console.log(singleIntegrations);
+    const li = document.createElement("li");
+    li.innerHTML = `${singleIntegrations}`;
+    integration.appendChild(li);
+  });
+};
 
-    })
-
-
-    const integration= document.getElementById("integration");
-    detailsShow.data.integrations.forEach(singleIntegrations=>{
-      console.log(singleIntegrations)
-      const li = document.createElement("li");
-      li.innerHTML = `${singleIntegrations}`;
-      integration.appendChild(li);
-
-    })
-}
-
-
-fetchData()
+fetchData();
 
 function removemodal() {
-    const list = document.getElementById("modal-body");
-    while (list.hasChildNodes()) {
-        list.removeChild(list.firstChild);
-    }
+  const list = document.getElementById("modal-body");
+  while (list.hasChildNodes()) {
+    list.removeChild(list.firstChild);
+  }
 }
 
-
-//  <li>${singleData.features[0]}</li>
-//     <li>${singleData.features[1]}</li>
-//     <li>${singleData.features[2]}</li>
+const showmore = () => {
+  const myElement = document.getElementById("row");
+  const button = document.getElementById("seemore");
+  for (const child of myElement.children) {
+    child.classList.remove("hide");
+    button.classList.add("hide");
+  }
+};
